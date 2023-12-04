@@ -1,24 +1,26 @@
-import { useAppDispatch } from '../../../../app/store'
-import { Deck } from '../../decks-api'
-import { removeDecksTC } from '../../decks-reducer'
 import s from './DeckItem.module.css'
+import { useAppDispatch } from '../../../../app/store.ts'
+import { deleteDeckTC, updateDeckTC } from '../../decks-thunks.ts'
+import { Deck } from '../../decks-api.ts'
 
 type DeckProps = {
-  deck: Deck // todo: fix
+  deck: Deck
 }
 
-const TEST_ACC_NAME = 'testNameOne'
+const TEST_ACC_NAME = 'testName'
 
 export const DeckItem = ({ deck }: DeckProps) => {
   const isTestingDeck = deck.author.name === TEST_ACC_NAME
   const dispatch = useAppDispatch()
 
-  const removeDeck = (id: string) => {
-    console.log(id)
-    dispatch(removeDecksTC(id))
+  const handleDeleteButtonClick = () => {
+    dispatch(deleteDeckTC(deck.id))
   }
 
-  console.log(s)
+  const handleEditButtonClick = () => {
+    dispatch(updateDeckTC({ id: deck.id, name: `${deck.name} updated` }))
+  }
+
   return (
     <li className={s.item}>
       <h3 className={s.title}>
@@ -37,8 +39,8 @@ export const DeckItem = ({ deck }: DeckProps) => {
 
       {isTestingDeck && (
         <div className={s.buttonBox}>
-          <button>update</button>
-          <button onClick={() => removeDeck(deck.id)}>delete</button>
+          <button onClick={handleEditButtonClick}>update</button>
+          <button onClick={handleDeleteButtonClick}>delete</button>
         </div>
       )}
     </li>

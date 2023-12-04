@@ -8,35 +8,37 @@ export const instance = axios.create({
 })
 
 export const decksAPI = {
-  getDecks() {
-    return instance.get<RootInterface>('decks')
+  fetchDecks() {
+    return instance.get<FetchDecksResponse>(`decks`)
   },
-  sendDecks(params: AddDeckParam) {
-    return instance.post('decks', params)
+  addDeck(name: string) {
+    return instance.post<Deck>(`decks`, {
+      name,
+    })
   },
-  removeDeck(id: string) {
-    return instance.delete(`decks/${id}`)
+  deleteDeck(id: string) {
+    return instance.delete<Deck>(`decks/${id}`)
+  },
+  updateDeck({ id, name }: UpdateDeckParams) {
+    return instance.patch<Deck>(`decks/${id}`, { name })
   },
 }
 
-export type AddDeckParam = {
+export type UpdateDeckParams = {
+  id: string
   name: string
 }
 
-export interface RootInterface {
+export type FetchDecksResponse = {
   items: Deck[]
   pagination: Pagination
   maxCardsCount: number
 }
-
-export interface Pagination {
-  currentPage: number
-  itemsPerPage: number
-  totalPages: number
-  totalItems: number
+export type Author = {
+  id: string
+  name: string
 }
-
-export interface Deck {
+export type Deck = {
   author: Author
   id: string
   userId: string
@@ -49,8 +51,9 @@ export interface Deck {
   updated: string
   cardsCount: number
 }
-
-export interface Author {
-  id: string
-  name: string
+export type Pagination = {
+  currentPage: number
+  itemsPerPage: number
+  totalPages: number
+  totalItems: number
 }
